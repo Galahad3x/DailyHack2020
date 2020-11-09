@@ -139,11 +139,60 @@ def evaluate_moves_with_ends(moves, libs, bks, rdrs):
 	return evaluate_moves_with_ends_2(moves, libs2, bks2, rdrs2)
 
 
+def evaluate_moves_2(time, moves, libs, bks, rdrs):
+	value = 0
+	move = moves[0]
+	try:
+		while len(moves) != 0:
+			if move.split()[1] == "m":
+				for bk in bks:
+					if bk.id == int(move.split()[0]):
+						for lib in libs:
+							if lib.id == int(move.split()[2]):
+								while True:
+									if time < 0:
+										return -1
+									result = bk.library.send_book(bk, lib)
+									if result == -1:
+										time -= 1
+										for bok in bks:
+											value += bok.end_day()
+									else:
+										moves = moves[1:]
+										move = moves[0]
+										break
+			elif move.split()[1] == "r":
+				for bk in bks:
+					if bk.id == int(move.split()[0]):
+						for rd in rdrs:
+							if rd.id == int(move.split()[2]):
+								while True:
+									if time < 0:
+										return -1
+									result = rd.start_book(bk)
+									if result == -1:
+										time -= 1
+										for bok in bks:
+											value += bok.end_day()
+									else:
+										moves = moves[1:]
+										move = moves[0]
+										break
+	except IndexError:
+		pass
+	return value
+
+
+def evaluate_moves(time, moves, libs, bks, rdrs):
+	libs2, bks2, rdrs2 = coordinated_deepcopy(libs, bks, rdrs)
+	return evaluate_moves_2(time, moves, libs2, bks2, rdrs2)
+
+
 time, libraries, books, readers = read_file(filename)
 
 # possible_answers = find_all_possibilities(time, libraries, books, readers)
 
 test_moves = ["0 r 0", "1 r 0", "2 r 0", "3 r 0"]
-print(evaluate_moves_with_ends(test_moves, libraries, books, readers))
+print(evaluate_moves(time, test_moves, libraries, books, readers))
 test_moves = ["0 r 0", "3 r 0", "1 r 0", "2 r 0"]
-print(evaluate_moves_with_ends(test_moves, libraries, books, readers))
+print(evaluate_moves(time, test_moves, libraries, books, readers))

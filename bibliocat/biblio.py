@@ -85,6 +85,7 @@ class Book:
 	def end_day(self):
 		if self.time != 0:
 			self.time -= 1
+			return 0
 		if self.time == 0:
 			if self.status == READING:
 				self.status = NOT_USED
@@ -93,12 +94,13 @@ class Book:
 				self.destination = None
 				self.reader.end_book(self)
 				return self.value
-			else:
+			elif self.status == TRANSPORTING:
 				self.status = NOT_USED
 				self.destination.books.append(self)
 				self.library = self.destination
 				self.destination = None
 				return 0
+			return 0
 
 	def get_library(self, libraries):
 		for lib in libraries:
@@ -132,6 +134,7 @@ class Reader:
 				if bk is None:
 					if book.status == NOT_USED:
 						book.reader = self
+						book.destination = book.library
 						book.time = self.book_times[book.id]
 						book.status = READING
 						self.books[i] = book
