@@ -6,4 +6,4 @@ Per a poder reduïr el nombre de caràcters he utilitzat una solució molt bruta
 
 ## Bibliocat
 
-El programa va lent i malament ( però funciona :) ), per això no hi ha solucions.
+El programa va lent i malament ( però funciona :) ), per això no hi ha solucions, l'important és participar.
